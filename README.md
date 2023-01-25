@@ -1,4 +1,4 @@
-# Containerperf
+# container-performance
 Container performance testing - outputs cpu, memory, disk (ssd) read and write speeds, internet speeds, and more. This is valuable to test a container environment's resources and setup.
 
 ## Roadmap
@@ -10,7 +10,8 @@ Container performance testing - outputs cpu, memory, disk (ssd) read and write s
 ## Getting started
 ### Run
 ```
-docker run johnsgresham/node-test-perf
+docker run johnsgresham/container-performance
+podman run docker://johnsgresham/container-performance
 
 (sample output...)
 Starting performance tests and other testing...
@@ -31,13 +32,13 @@ Speedtest link: https://www.speedtest.net/result/c/3e219403-e33c-426b-9c2a-19831
 ```
 To test a mounted disk speed, mount it to /workdir like so
 ```
-docker run -v /path/to/host/disk:/workdir johnsgresham/node-test-perf
+docker run -v /path/to/host/disk:/workdir johnsgresham/container-performance
 ```
 ### Develop
 Local environment setup: 
 1. In the Containerfile, swap commenting out the `entrypoint` with `cmd bash`
-2. Build a local container `podman build -t ubup .`
-3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir ubup`
+2. Build a local container `podman build -t cont-perf-local .`
+3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir cont-perf-local`
 4. Modify index.js code
 5. Run `node workdir/index.js` inside the container
 
