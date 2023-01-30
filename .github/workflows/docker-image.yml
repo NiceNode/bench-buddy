@@ -33,4 +33,4 @@ jobs:
         sudo apt-get -y install podman
           
     - name: Build the Container image
-      run: podman build . --all-platforms --file Containerfile --tag nicenode/speedometer:$(date +%s)
+      run: podman build . --platform linux/arm64 --platform linux/amd64 --file Containerfile --tag nicenode/speedometer:$(date +%s)
