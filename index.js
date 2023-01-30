@@ -4,7 +4,7 @@ const exec = util.promisify(require('node:child_process').exec);
 const fs = require('fs').promises;
 
 console.log("Starting performance tests and other testing...")
-console.log("argv: ", process.argv)
+// console.log("argv: ", process.argv)
 
 const rnd = Math.round;
 
@@ -49,21 +49,22 @@ const totalMemory = async () => {
 // fio man pages https://manpages.ubuntu.com/manpages/xenial/man1/fio.1.html
 const fioSpeed = async () => {
 	try {
-		const fio_target_filename = path.join('workdir', "random_read_write.fio");
-		const fio_output_filename = path.join('workdir', "fio.out");
+		const VOLUME_MOUNT_PATH = "perf-volume"
+		const fio_target_filename = path.join(VOLUME_MOUNT_PATH, "random_read_write.fio");
+		const fio_output_filename = path.join(VOLUME_MOUNT_PATH, "fio.out");
 
+		const RUN_TIME = 30;
 		// limits runtime to 30 seconds
 		let fioArgs = [
 			'fio', '--randrepeat=1', '--ioengine=libaio', '--direct=1', '--gtod_reduce=1',
 			'--name=test', '--filename=' + fio_target_filename, '--bs=4k', '--iodepth=64',
 			'--size=4G', '--readwrite=randrw', '--rwmixread=75', '--output=' + fio_output_filename,
-			'--output-format=json', '--runtime=30'
+			'--output-format=json', '--runtime=' + RUN_TIME
 			];
 		
 		let fioCommand = fioArgs.join(" ");
-		console.log(fioCommand)
-		console.log("running a 10 second file input and output speed test in directory /workdir ...")
-		console.log("(mount a volume to directory /workdir to test the mount speed.)")
+		console.log(`running a ${RUN_TIME} second file input and output speed test in directory /workdir ...`)
+		console.log(`(mount a volume to directory /${VOLUME_MOUNT_PATH} to test the mount speed.)`)
 
 		const { stdout, stderr } = await exec(fioCommand);
 		const outputJSON = await parseJSON(fio_output_filename);
@@ -110,6 +111,8 @@ const internetSpeed = async () => {
 	}
 }
 
+// apt-get install nc
+// nc -u 35.209.31.240 30303
 
 
 

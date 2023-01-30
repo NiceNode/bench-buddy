@@ -7,6 +7,7 @@ apt-get install -y nodejs
 RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash - &&\
 apt-get install speedtest
 
+RUN mkdir /perf-volume
 RUN mkdir /workdir
 COPY index.js /workdir/index.js
 
