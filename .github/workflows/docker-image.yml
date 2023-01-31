@@ -31,12 +31,8 @@ jobs:
             ghcr.io/nicenode/speedometer
           # Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
+            IF ${{ github.head_ref != 'refs/heads/main' }} dev ELSE latest FI
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=sha
           labels: |
             performance
