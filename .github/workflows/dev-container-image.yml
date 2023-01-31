@@ -30,6 +30,7 @@ jobs:
           # Docker tags based on the following events/attributes
           tags: |
             dev
+            type=sha
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
