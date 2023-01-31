@@ -29,9 +29,9 @@ jobs:
             ghcr.io/nicenode/speedometer
           # Docker tags based on the following events/attributes
           tags: |
-            dev
             type=ref,event=pr
             type=sha
+            dev
           labels: |
             performance
             testing
