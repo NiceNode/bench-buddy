@@ -29,8 +29,6 @@ jobs:
             ghcr.io/nicenode/speedometer-dev
           # Docker tags based on the following events/attributes
           tags: |
-            type=ref,event=pr
-            type=sha
             dev
 
       - name: Login to GitHub Container Registry
