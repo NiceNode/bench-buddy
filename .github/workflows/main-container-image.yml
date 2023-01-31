@@ -2,9 +2,7 @@ name: Container Image CI
 
 on:
   push:
-    branches: [ "main", "test-build-ci" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main"]
 
 jobs:
 
@@ -31,8 +29,7 @@ jobs:
             ghcr.io/nicenode/speedometer
           # Docker tags based on the following events/attributes
           tags: |
-            IF ${{ github.head_ref != 'refs/heads/main' }} dev ELSE latest FI
-            type=ref,event=pr
+            latest
             type=sha
           labels: |
             performance
