@@ -26,19 +26,12 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/nicenode/speedometer
+            ghcr.io/nicenode/speedometer-dev
           # Docker tags based on the following events/attributes
           tags: |
             type=ref,event=pr
             type=sha
             dev
-          labels: |
-            performance
-            testing
-            speed
-            disk
-            internet
-            hardware
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
