@@ -1,4 +1,4 @@
-# container-performance
+# speedometer
 Container performance testing - outputs cpu, memory, disk (ssd) read and write speeds, internet speeds, and more. This is valuable to test a container environment's resources and setup.
 
 ## Roadmap
@@ -10,8 +10,8 @@ Container performance testing - outputs cpu, memory, disk (ssd) read and write s
 ## Getting started
 ### Run
 ```
-docker run johnsgresham/container-performance
-podman run docker://johnsgresham/container-performance
+docker run ghcr.io/nicenode/speedometer
+podman run ghcr.io/nicenode/speedometer
 
 (sample output...)
 Starting performance tests and other testing...
@@ -19,8 +19,8 @@ Starting performance tests and other testing...
 Number of cpu cores: 8 cores
 Total memory: 12 GB
 
-running a 10 second file input and output speed test in directory /workdir ...
-(mount a volume to directory /workdir to test the mount speed.)
+running a 10 second file input and output speed test in directory /perf-volume ...
+(mount a volume to directory /perf-volume to test the mount speed.)
 Read: 3429 IOPS, 2972 min IOPS
 Write: 1142 IOPS, 998 min IOPS
 
@@ -30,15 +30,15 @@ Download: average 294Mbps, latency: iqm 9.174ms and max 123.8ms
 Upload: average 175Mbps, latency: iqm 85.826ms and max 268.886ms
 Speedtest link: https://www.speedtest.net/result/c/3e219403-e33c-426b-9c2a-1983126a6e4e
 ```
-To test a mounted disk speed, mount it to /workdir like so
+To test a mounted disk speed, mount it to /perf-volume like so
 ```
-docker run -v /path/to/host/disk:/workdir johnsgresham/container-performance
+docker run -v /path/to/host/disk:/perf-volume johnsgresham/speedometer
 ```
 ### Develop
 Local environment setup: 
 1. In the Containerfile, swap commenting out the `entrypoint` with `cmd bash`
 2. Build a local container `podman build -t cont-perf-local .`
-3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir cont-perf-local`
+3. Run the container interactively `podman run -it cont-perf-local` (optionally with a volume mount from this repo to `/perf-volume` in the container `podman run -it -v $(pwd):/perf-volume cont-perf-local`)
 4. Modify index.js code
 5. Run `node workdir/index.js` inside the container
 

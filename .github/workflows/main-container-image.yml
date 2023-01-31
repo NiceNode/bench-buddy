@@ -30,7 +30,6 @@ jobs:
           # Docker tags based on the following events/attributes
           tags: |
             latest
-            type=sha
           labels: |
             performance
             testing
