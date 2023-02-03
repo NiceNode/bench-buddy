@@ -1,0 +1,34 @@
+{
+  "name": "speedometer",
+  "version": "1.0.0",
+  "description": "measures various speeds of a container environment",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "yargs": "^17.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build-local" : "podman build -t speedometer-local .",
+    "work" : "podman run -it -v $(pwd):/workdir speedometer-local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiceNode/speedometer.git"
+  },
+  "keywords": [
+    "container",
+    "performance",
+    "speed",
+    "internet",
+    "fileio",
+    "hardware",
+    "test"
+  ],
+  "author": "jgresham",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NiceNode/speedometer/issues"
+  },
+  "homepage": "https://github.com/NiceNode/speedometer#readme"
+}
