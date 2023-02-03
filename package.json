@@ -9,7 +9,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-local" : "podman build -t speedometer-local .",
+    "work" : "podman run -it -v $(pwd):/workdir speedometer-local",
   },
   "repository": {
     "type": "git",

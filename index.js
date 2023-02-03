@@ -31,24 +31,46 @@ const parseJSON = async (filepath) => {
   }
 }
 
-const cpuCores = async () => {
+const cpu = async () => {
 	const results = {};
 	try {
-		const { stdout, stderr } = await exec("lscpu |  grep CPU\\(s\\):");
+			let { stdout, stderr } = await exec("lscpu |  grep CPU\\(s\\):");
 			const output = stdout.split("\n")[0]; // get the first line of output
 			const cores = parseInt(output.split(/\s+/)[1]); // get the second column (cpu cores)
 			console.log(`Number of cpu cores: ${cores} cores`);
 			results.cores = cores
+
+			const maxThreadsCmd = "cat /proc/sys/kernel/threads-max";
+			let { stdout: stdout2, stderr: stderr2 } = await exec(maxThreadsCmd);
+			const maxThreads = parseInt(stdout2)
+			console.log(`Maximum number of cpu threads: ${maxThreads} threads`);
+			results.maxThreads = maxThreads
+
+			let threadsAssay = [1, 4, 8, 32]
+			const sysbenchResults = {}
+			for(let i=0; i<threadsAssay.length; i++) {
+				const numOfThreads = threadsAssay[i];
+				const sysbenchCmd = `sysbench cpu --threads=${numOfThreads} --cpu-max-prime=50000 run`
+				const label = 'total number of events:'
+				let { stdout, stderr }  = await exec(`${sysbenchCmd} |  grep '${label}'`);
+				const events = parseInt(stdout.split(/\s+/)[5]);
+				console.log(`Test using threads: ${numOfThreads} threads, created cpu events: ${events} events`);
+			  sysbenchResults[numOfThreads] = events;
+			}
+			results.sysbenchTest = sysbenchResults;
+
+
+
 	} catch(error) {
 		if (error) {
-			console.error(`exec error in cpuCores: ${error}`);
+			console.error(`exec error in cpu: ${error}`);
 			return;
 		}
 	}
 	return results;
 }
 
-const totalMemory = async () => {
+const memory = async () => {
 	const results = {};
 	try {
 		const { stdout, stderr } = await exec("free -m");
@@ -57,9 +79,42 @@ const totalMemory = async () => {
 			const memoryNumMB = parseInt(memory)
 			console.log(`Total memory: ${rnd(memory/1000)} GB`);
 			results.total = memoryNumMB
+
+			/**
+			  --memory-block-size=SIZE    size of memory block for test [1K]
+				--memory-total-size=SIZE    total size of data to transfer [100G]
+				--memory-scope=STRING       memory access scope {global,local} [global]
+				--memory-hugetlb[=on|off]   allocate memory from HugeTLB pool [off]
+				--memory-oper=STRING        type of memory operations {read, write, none} [write]
+				--memory-access-mode=STRING memory access mode {seq,rnd} [seq]
+			 */
+			// 2020 AMD Ryzen 5800X CPU has 32MB L3 cache - test a block size greater
+			let blockSizeAssay = ['32MB', '1G']
+			const sysbenchResults = {}
+			for(let i=0; i<2; i++) {
+				let operation = i === 0 ? 'read'  : 'write';
+				sysbenchResults[operation] = {};
+				for(let i=0; i<blockSizeAssay.length; i++) {
+					const blockSize = blockSizeAssay[i];
+					const sysbenchCmdArgs = ['sysbench memory', 
+						`--memory-block-size=${blockSize}`, '--memory-total-size=100000G', 
+						'--memory-access-mode=seq', `--memory-oper=${operation}`,
+						'run']
+					const sysbenchCmd = sysbenchCmdArgs.join(' ');
+					const label = 'transferred'
+					let { stdout, stderr }  = await exec(`${sysbenchCmd} |  grep '${label}'`);
+					// thanks chatGPT for this regex
+					let match = stdout.match(/(\d+(?:\.\d+)?)\sMiB\/sec/);
+					let speed = match ? parseInt(match[1]) : null;
+					console.log(`Memory ${operation} test using blockSize: ${blockSize}, result speed: ${speed} MiB/sec`);
+					sysbenchResults[operation][blockSize] = speed;
+				}
+			}
+			results.sysbenchTest = sysbenchResults;
+			
 	} catch(error) {
 		if (error) {
-			console.error(`exec error in totalMemory: ${error}`);
+			console.error(`exec error in memory: ${error}`);
 			return;
 		}
 	}
@@ -69,7 +124,7 @@ const totalMemory = async () => {
 // fio man pages https://manpages.ubuntu.com/manpages/xenial/man1/fio.1.html
 const fioSpeed = async () => {
 	try {
-		const VOLUME_MOUNT_PATH = "perf-volume"
+		const VOLUME_MOUNT_PATH = "/test-volume"
 
 		const fio_target_filename = path.join(VOLUME_MOUNT_PATH, "random_read_write.fio");
 		const fio_output_filename = path.join(VOLUME_MOUNT_PATH, "fio.out");
@@ -93,8 +148,8 @@ const fioSpeed = async () => {
 			];
 		
 		let fioCommand = fioArgs.join(" ");
-		console.log(`running about ${RUN_TIME} second file input and output speed test in directory /workdir ...`)
-		console.log(`(mount a volume to directory /${VOLUME_MOUNT_PATH} to test the mount speed.)`)
+		console.log(`running about ~${RUN_TIME} second file input and output speed test...`)
+		console.log(`(mount a volume to directory ${VOLUME_MOUNT_PATH} to test the mount speed.)`)
 
 		const { stdout, stderr } = await exec(fioCommand);
 		const outputJSON = await parseJSON(fio_output_filename);
@@ -168,15 +223,19 @@ const main = async () => {
 	// console.log("Starting performance tests and other testing...")
 	const results = {};
 	if(inputArgs.tests.includes('cpu')) {
-		results.cpu = await cpuCores();
+		console.log("\n------ CPU ------")
+		results.cpu = await cpu();
 	}
 	if(inputArgs.tests.includes('memory')) {
-		results.memory = await totalMemory();
+		console.log("\n------ memory ------")
+		results.memory = await memory();
 	}
 	if(inputArgs.tests.includes('disk')) {
+		console.log("\n------ disk storage ------")
 		results.disk = await fioSpeed();
 	}
 	if(inputArgs.tests.includes('internet')) {
+		console.log("\n------ internet ------")
 		results.internet = await internetSpeed();
 	}
 	if(inputArgs.format == 'json') {
