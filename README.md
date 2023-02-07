@@ -93,19 +93,40 @@ The first goal of this project is to answer this question.
 
 Secondly, this project can be used by developers and users who want to evaluate the performance and setup of their specific container environment. Example, a person who is a solo-home-ethereum-staker!
 
+## Credits
+The first version of speedometer was based off of Stakehouse's eth-wizard's tests inside its Ethereum validator installation wizard. Code at https://github.com/stake-house/eth-wizard/blob/main/ethwizard/platforms/ubuntu/install.py#L51
 ## Terms, agreements, privacy, etc
 By using or running this code or container, you agree to the following agreements set by a third-party tool used inside this software:
 
-==============================================================================
+### Speedtest
+From https://www.speedtest.net/apps/cli
 
-You may only use this Speedtest software and information generated
-from it for personal, non-commercial use, through a command line
-interface on a personal computer. Your use of this software is subject
-to the End User License Agreement, Terms of Use and Privacy Policy at
-these URLs:
+>You may only use this Speedtest software and information generated
+>from it for personal, non-commercial use, through a command line
+>interface on a personal computer. Your use of this software is subject
+>to the End User License Agreement, Terms of Use and Privacy Policy at
+>these URLs:
+>
+>	https://www.speedtest.net/about/eula
+>
+>	https://www.speedtest.net/about/terms
+> 
+>	https://www.speedtest.net/about/privacy
 
-	https://www.speedtest.net/about/eula
-	https://www.speedtest.net/about/terms
-	https://www.speedtest.net/about/privacy
+### WorldTimeAPI
+From http://worldtimeapi.org/pages/privacypolicy
 
-==============================================================================
+>We do not...
+>WorldTimeAPI is a simple service, and there is no requirement for us to persist any >information about our visitors. Therefore:
+>
+>we do not issue Cookies or any other form of tracking tokens
+>we do not "fingerprint" visitors
+>We do not use Google Analytics or any other browser-based tracking service.
+>
+>We do...
+>We do log a small amount of information about the requests made to the service. This >information includes the date and time of requests, the IP the request came from, and it's >location. Some of this information is temporary; for example we keep the IP of the request >only for a few minutes so we can guard against attacks from malicious agents.
+>
+>We also store details about system errors so they can be investigated and rectified.
+>
+>Any information we do store long-term is purely to allow us plan for future enhancements to >the system, and there is no identifying information, pseudo or otherwise.
+

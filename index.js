@@ -11,6 +11,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import util from 'node:util'
 import { exec as execCallback } from 'node:child_process'
+import fetch from 'node-fetch';
 
 let inputArgs;
 
@@ -219,8 +220,43 @@ const internetSpeed = async () => {
 	}
 }
 
+const timeAccuracy = async () => {
+	try {
+		// WorldTimeAPI docs: http://worldtimeapi.org/pages/privacypolicy
+
+		// In our README, it specifies that the WorldTimeAPI license will be accepted
+		// 	on behalf of the user.
+		const timeUrl = "http://worldtimeapi.org/api/timezone/America/Los_Angeles"
+		const localTimeBefore = Date.now();
+		const response = await fetch(timeUrl);
+		const localTimeAfter = Date.now();
+		const localTimeAvgMs = (localTimeAfter + localTimeBefore) / 2;
+		const serverData = await response.json();
+		const serverTimeSec = serverData.unixtime;
+
+		// use Math.floor because the server currently returns second accuracy
+		//	so the server's time is effectively using floor too 
+		const localTimeSeconds = Math.floor(localTimeAvgMs/1000);
+		const diff = Math.abs(serverTimeSec - localTimeSeconds)
+		// todo: sub second precision
+		console.log(`Time accuracy: local time off by ${diff} seconds`)
+		console.log(`Local time: ${new Date(localTimeAvgMs).toLocaleString()}, Server time ${new Date(serverTimeSec*1000).toLocaleString()}`);
+		console.log(`Local time: ${localTimeSeconds} seconds UTC, Server time ${serverTimeSec} seconds UTC`);
+
+		const results = { 
+			localTime: localTimeSeconds,
+			serverTime: serverTimeSec
+		}
+		return results;
+	} catch(error) {
+		if (error) {
+			console.error(`timeAccuracy error: ${error}`);
+			return;
+		}
+	}
+}
+
 const main = async () => {
-	// console.log("Starting performance tests and other testing...")
 	const results = {};
 	if(inputArgs.tests.includes('cpu')) {
 		console.log("\n------ CPU ------")
@@ -237,6 +273,10 @@ const main = async () => {
 	if(inputArgs.tests.includes('internet')) {
 		console.log("\n------ internet ------")
 		results.internet = await internetSpeed();
+	}
+	if(inputArgs.tests.includes('time')) {
+		console.log("\n------ time ------")
+		results.time = await timeAccuracy();
 	}
 	if(inputArgs.format == 'json') {
 		ogConsoleLog(JSON.stringify(results))
@@ -256,9 +296,9 @@ inputArgs = yargs(hideBin(process.argv))
 		alias: 't',
 		describe: 'tests to run. space separated (ex. cpu internet)',
 		type: 'array',
-		default: ['memory', 'internet', 'cpu', 'disk'],
+		default: ['memory', 'internet', 'cpu', 'disk', 'time'],
 		defaultDescription: 'all',
-		choices: ['memory', 'internet', 'cpu', 'disk']
+		choices: ['memory', 'internet', 'cpu', 'disk', 'time']
 	})
 	.help()
 	.epilogue('For more information, visit https://github.com/NiceNode/speedometer')

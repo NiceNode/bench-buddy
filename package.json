@@ -1,16 +1,16 @@
 {
   "name": "speedometer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "measures various speeds of a container environment",
   "main": "index.js",
   "type": "module",
   "dependencies": {
+    "node-fetch": "^3.3.0",
     "yargs": "^17.6.2"
   },
-  "devDependencies": {},
   "scripts": {
-    "build-local" : "podman build -t speedometer-local .",
-    "work" : "podman run -it -v $(pwd):/workdir speedometer-local"
+    "build-local": "podman build -t speedometer-local .",
+    "work": "podman run -it -v $(pwd):/workdir speedometer-local"
   },
   "repository": {
     "type": "git",
