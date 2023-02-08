@@ -1,6 +1,6 @@
 {
   "name": "speedometer",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "measures various speeds of a container environment",
   "main": "index.js",
   "type": "module",
@@ -10,8 +10,10 @@
     "yargs": "^17.6.2"
   },
   "scripts": {
+    "pod-mach-init": "podman machine init --rootful --cpus 8 --memory 12288 --now",
     "print-image-size": "podman inspect -f \"{{ .Size }}\" speedometer-local",
     "build-local": "podman build -t speedometer-local .",
+    "run-local": "podman run speedometer-local",
     "work": "podman run -it -v $(pwd):/workdir speedometer-local"
   },
   "repository": {

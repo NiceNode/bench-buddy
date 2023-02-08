@@ -16,7 +16,7 @@ import fetch from 'node-fetch';
 
 import ethNode from './node-requirements/eth-node.js';
 
-console.log(ethNode)
+// console.log(ethNode)
 
 const exec = util.promisify(execCallback);
 const error = chalk.bold.red;
@@ -53,7 +53,7 @@ const cpu = async (req) => {
 				if(req?.cores) {
 					const reqCores = req?.cores
 					if(reqCores.minimum && cores < reqCores.minimum) {
-						console.log(error(`Requires a minimum of ${reqCores.minimum} cores`))
+						console.log(error(`***Requires a minimum of ${reqCores.minimum} cores`))
 					} else if(reqCores.recommended && cores < reqCores.recommended) {
 						console.log(warning(`Recommendeds more than ${reqCores.recommended} cores`))
 					} else {
@@ -108,28 +108,33 @@ const memory = async (req) => {
 			const totalMemoryNumGB = rnd(totalMemoryNumMB/1000)
 			const availableMemoryNumGB = rnd(availableMemoryNumMB/1000)
 			if(!req || req?.total) {
-				console.log(`Total memory: ${totalMemoryNumGB}GB`);
-				const reqTotal = req.total
-				if(reqTotal.minimum && totalMemoryNumGB < reqTotal.minimum) {
-					console.log(error(`Requires a minimum of ${reqTotal.minimum}GB total memory`))
-				} else if(reqTotal.recommended && totalMemoryNumGB < reqTotal.recommended) {
-					console.log(warning(`Recommendeds more than ${reqTotal.recommended}GB total memory`))
-				} else {
-					console.log(success(`Satisfies recommended ${reqTotal.recommended}GB total memory`))
-				}
 				results.total = totalMemoryNumGB
-			}
-			if(!req || req?.available) {
-				console.log(`Available memory: ${availableMemoryNumGB} GB`);
-				const reqAvailable = req.available
-				if(reqAvailable.minimum && availableMemoryNumGB < reqAvailable.minimum) {
-					console.log(error(`Requires a minimum of ${reqAvailable.minimum}GB available memory`))
-				} else if(reqAvailable.recommended && availableMemoryNumGB < reqAvailable.recommended) {
-					console.log(warning(`Recommendeds more than ${reqAvailable.recommended}GB available memory`))
-				} else {
-					console.log(success(`Satisfies recommended ${reqAvailable.recommended}GB available memory`))
+				console.log(`Total memory: ${totalMemoryNumGB}GB`);
+				if(req?.total) {
+					const reqTotal = req.total
+					if(reqTotal.minimum && totalMemoryNumGB < reqTotal.minimum) {
+						console.log(error(`***Requires a minimum of ${reqTotal.minimum}GB total memory`))
+					} else if(reqTotal.recommended && totalMemoryNumGB < reqTotal.recommended) {
+						console.log(warning(`Recommendeds more than ${reqTotal.recommended}GB total memory`))
+					} else {
+						console.log(success(`Satisfies recommended ${reqTotal.recommended}GB total memory`))
+					}
 				}
+			}
+			
+			if(!req || req?.available) {
 				results.available = availableMemoryNumGB
+				console.log(`Available memory: ${availableMemoryNumGB} GB`);
+				if(req?.available) {
+					const reqAvailable = req.available
+					if(reqAvailable.minimum && availableMemoryNumGB < reqAvailable.minimum) {
+						console.log(error(`***Requires a minimum of ${reqAvailable.minimum}GB available memory`))
+					} else if(reqAvailable.recommended && availableMemoryNumGB < reqAvailable.recommended) {
+						console.log(warning(`Recommendeds more than ${reqAvailable.recommended}GB available memory`))
+					} else {
+						console.log(success(`Satisfies recommended ${reqAvailable.recommended}GB available memory`))
+					}
+				}
 			}
 		}
 		/**
@@ -181,6 +186,7 @@ const storage = async (req) => {
 	const results = {};
 	try {
 		if(!req || req?.iops) {
+			results.iops = {};
 
 			const fio_target_filename = path.join(VOLUME_MOUNT_PATH, "random_read_write.fio");
 			const fio_output_filename = path.join(VOLUME_MOUNT_PATH, "fio.out");
@@ -215,37 +221,39 @@ const storage = async (req) => {
 			const writeAvgIops = rnd(fioJob.write.iops)
 			const readMinIOPS = rnd(fioJob.read.iops_min)
 			const writeMinIOPS = rnd(fioJob.write.iops_min)
-			if(!req || req?.iops?.read || req?.iops?.write) {
-				results.iops = {};
-			}
+
 			if(!req || req?.iops?.read) {
-				console.log(`Read: ${readAvgIops} IOPS, ${readMinIOPS} min IOPS`);
-				const reqTotal = req.iops.read
-				if(reqTotal.minimum && readAvgIops < reqTotal.minimum) {
-					console.log(error(`Requires a minimum of ${reqTotal.minimum}IOPS read`))
-				} else if(reqTotal.recommended && readAvgIops < reqTotal.recommended) {
-					console.log(warning(`Recommendeds more than ${reqTotal.recommended}IOPS read`))
-				} else {
-					console.log(success(`Satisfies recommended ${reqTotal.recommended}IOPS read`))
-				}
 				results.iops.read = {
 					average: readAvgIops
+				}
+				console.log(`Read: ${readAvgIops} IOPS, ${readMinIOPS} min IOPS`);
+				if(req?.iops?.read) {
+					const reqTotal = req.iops.read
+					if(reqTotal.minimum && readAvgIops < reqTotal.minimum) {
+						console.log(error(`***Requires a minimum of ${reqTotal.minimum}IOPS read`))
+					} else if(reqTotal.recommended && readAvgIops < reqTotal.recommended) {
+						console.log(warning(`Recommendeds more than ${reqTotal.recommended}IOPS read`))
+					} else {
+						console.log(success(`Satisfies recommended ${reqTotal.recommended}IOPS read`))
+					}
 				}
 				// results.readIOPS = readAvgIops
 				// results.readMinIOPS = readMinIOPS
 			}
 			if(!req || req?.iops?.write) {
-				console.log(`Write: ${writeAvgIops} IOPS, ${writeMinIOPS} min IOPS`);
-				const reqTotal = req.iops.write
-				if(reqTotal.minimum && writeAvgIops < reqTotal.minimum) {
-					console.log(error(`Requires a minimum of ${reqTotal.minimum}IOPS write`))
-				} else if(reqTotal.recommended && writeAvgIops < reqTotal.recommended) {
-					console.log(warning(`Recommendeds more than ${reqTotal.recommended}IOPS write`))
-				} else {
-					console.log(success(`Satisfies recommended ${reqTotal.recommended}IOPS write`))
-				}
 				results.iops.write = {
 					average: writeAvgIops
+				}
+				console.log(`Write: ${writeAvgIops} IOPS, ${writeMinIOPS} min IOPS`);
+				if(req?.iops?.write) {
+					const reqTotal = req.iops.write
+					if(reqTotal.minimum && writeAvgIops < reqTotal.minimum) {
+						console.log(error(`***Requires a minimum of ${reqTotal.minimum}IOPS write`))
+					} else if(reqTotal.recommended && writeAvgIops < reqTotal.recommended) {
+						console.log(warning(`Recommendeds more than ${reqTotal.recommended}IOPS write`))
+					} else {
+						console.log(success(`Satisfies recommended ${reqTotal.recommended}IOPS write`))
+					}
 				}
 				// results.writeIOPS = writeAvgIops
 				// results.writeMinIOPS = writeMinIOPS
@@ -268,22 +276,26 @@ const storage = async (req) => {
 			
 			console.log(`Total storage: ${totalStorageNumGB}GB`);
 			console.log(`Available storage: ${availableStorageNumGB}GB`);
-			const reqTotal = req.size
-			if(reqTotal.minimum && availableStorageNumGB < reqTotal.minimum) {
-				console.log(error(`Requires a minimum of ${reqTotal.minimum}GB available storage`))
-				if(totalStorageNumGB > reqTotal.minimum) {
-					console.log(`Total storage exceeds the minimum. Consider freeing up storage.`);
-				}
-			} else if(reqTotal.recommended && availableStorageNumGB < reqTotal.recommended) {
-				console.log(warning(`Recommendeds more than ${reqTotal.recommended}GB available storage`))
-				if(totalStorageNumGB > reqTotal.recommended) {
-					console.log(`Total storage exceeds the recommended. Consider freeing up storage.`);
-				}
-			} else {
-				console.log(success(`Satisfies recommended ${reqTotal.recommended}GB available storage`))
-			}
 			results.size.total = totalStorageNumGB
 			results.size.available = availableStorageNumGB
+
+			if(req?.size) {
+				const reqTotal = req.size
+				if(reqTotal.minimum && availableStorageNumGB < reqTotal.minimum) {
+					console.log(error(`***Requires a minimum of ${reqTotal.minimum}GB available storage`))
+					if(totalStorageNumGB > reqTotal.minimum) {
+						console.log(`Total storage exceeds the minimum. Consider freeing up storage.`);
+					}
+				} else if(reqTotal.recommended && availableStorageNumGB < reqTotal.recommended) {
+					console.log(warning(`Recommendeds more than ${reqTotal.recommended}GB available storage`))
+					if(totalStorageNumGB > reqTotal.recommended) {
+						console.log(`Total storage exceeds the recommended. Consider freeing up storage.`);
+					}
+				} else {
+					console.log(success(`Satisfies recommended ${reqTotal.recommended}GB available storage`))
+				}
+			}
+
 		}
 
 		return results;
@@ -317,35 +329,34 @@ const internetSpeed = async (req) => {
 			const downloadAvgMbps = rnd((outputJSON.download.bandwidth*8)/1e6);
 			const uploadAvgMbps = rnd((outputJSON.upload.bandwidth * 8)/1e6);
 			console.log(`Ping: average ${outputJSON.ping.latency}ms, max ${outputJSON.ping.high}ms`);
+			results.download = downloadAvgMbps;
+			results.upload = uploadAvgMbps;
+			results.latency = outputJSON.ping.latency;
+			results.resultsUrl = outputJSON.result.url;
 
-			if(!req || req?.speed?.download) {
+			if(req?.speed?.download) {
 				const reqTotal = req.speed.download
 				if(reqTotal.minimum && downloadAvgMbps < reqTotal.minimum) {
-					console.log(error(`Requires a minimum of ${reqTotal.minimum}Mbps download`))
+					console.log(error(`***Requires a minimum of ${reqTotal.minimum}Mbps download`))
 				} else if(reqTotal.recommended && downloadAvgMbps < reqTotal.recommended) {
 					console.log(warning(`Recommendeds more than ${reqTotal.recommended}Mbps download`))
 				} else {
 					console.log(success(`Satisfies recommended ${reqTotal.recommended}Mbps download`))
 				}
 				console.log(`Download: average ${downloadAvgMbps}Mbps, latency: iqm ${outputJSON.download.latency.iqm}ms and max ${outputJSON.download.latency.high}ms`);
-				results.download = downloadAvgMbps;
 			}
-			if(!req || req?.speed?.upload) {
+			if(req?.speed?.upload) {
 				const reqTotal = req.speed.upload
 				if(reqTotal.minimum && uploadAvgMbps < reqTotal.minimum) {
-					console.log(error(`Requires a minimum of ${reqTotal.minimum}Mbps upload`))
+					console.log(error(`***Requires a minimum of ${reqTotal.minimum}Mbps upload`))
 				} else if(reqTotal.recommended && uploadAvgMbps < reqTotal.recommended) {
 					console.log(warning(`Recommendeds more than ${reqTotal.recommended}Mbps upload`))
 				} else {
 					console.log(success(`Satisfies recommended ${reqTotal.recommended}Mbps upload`))
 				}
 				console.log(`Upload: average ${uploadAvgMbps}Mbps, latency: iqm ${outputJSON.upload.latency.iqm}ms and max ${outputJSON.upload.latency.high}ms`);
-				results.upload = uploadAvgMbps;
 			}
 			console.log(`Speedtest link: ${outputJSON.result.url}`);
-
-			results.latency = outputJSON.ping.latency;
-			results.resultsUrl = outputJSON.result.url;
 		}
 
 		if(!req || req?.dataCap) {
@@ -388,7 +399,7 @@ const timeAccuracy = async (req) => {
 			if(req?.accuracy) {
 				const reqTotal = req.accuracy
 				if(reqTotal.maximum !== undefined && diff > reqTotal.maximum) {
-					console.log(error(`Requires a maximum of ${reqTotal.maximum} seconds error`))
+					console.log(error(`***Requires a maximum of ${reqTotal.maximum} seconds error`))
 				} else if(reqTotal.recommended  !== undefined && diff > reqTotal.recommended) {
 					console.log(warning(`Recommendeds less than ${reqTotal.recommended} seconds error`))
 				} else {
@@ -412,28 +423,31 @@ const main = async () => {
 	const results = {};
 	inputReq = inputArgs.requirements === 'eth-node' ? ethNode : undefined;
 
+	// logic to run a test
+	// if not included in test, nope
+	// if not req OR req included
 	let runNextTest = inputReq === undefined || inputReq.cpu;
-	if(inputArgs.tests.includes('cpu') || runNextTest) {
+	if(inputArgs.tests.includes('cpu') && runNextTest) {
 		console.log("\n------ CPU ------")
 		results.cpu = await cpu(inputReq?.cpu);
 	}
 	runNextTest = inputReq === undefined || inputReq.memory;
-	if(inputArgs.tests.includes('memory') || runNextTest) {
+	if(inputArgs.tests.includes('memory') && runNextTest) {
 		console.log("\n------ Memory ------")
 		results.memory = await memory(inputReq?.memory);
 	}
 	runNextTest = inputReq === undefined || inputReq.storage;
-	if(inputArgs.tests.includes('storage') || runNextTest) {
+	if(inputArgs.tests.includes('storage') && runNextTest) {
 		console.log("\n------ Storage ------")
 		results.storage = await storage(inputReq?.storage);
 	}
 	runNextTest = inputReq === undefined || inputReq.internet;
-	if(inputArgs.tests.includes('internet') || runNextTest) {
+	if(inputArgs.tests.includes('internet') && runNextTest) {
 		console.log("\n------ Internet ------")
 		results.internet = await internetSpeed(inputReq?.internet);
 	}
 	runNextTest = inputReq === undefined || inputReq.time;
-	if(inputArgs.tests.includes('time') || runNextTest) {
+	if(inputArgs.tests.includes('time') && runNextTest) {
 		console.log("\n------ Time ------")
 		results.time = await timeAccuracy(inputReq?.time);
 	}
