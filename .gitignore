@@ -2,3 +2,5 @@ random_read_write.fio
 fio.out
 
 **/node_modules
+
+.DS_Store

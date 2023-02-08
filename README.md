@@ -1,5 +1,5 @@
 # speedometer
-Runtime environment performance testing for containers - outputs cpu, memory, disk (ssd) read and write speeds, internet speeds, and more. This is valuable to test a container environment's resources and setup.
+Runtime environment performance testing for containers - outputs cpu, memory, storage (ssd) read and write speeds, internet speeds, and more. This is valuable to test a container environment's resources and setup.
 ## Getting started
 ### Pre-requisite
 Install a container runtime like [Podman](https://podman.io/) or [Docker](https://www.docker.com/)
@@ -25,7 +25,7 @@ Download: average 294Mbps, latency: iqm 9.174ms and max 123.8ms
 Upload: average 175Mbps, latency: iqm 85.826ms and max 268.886ms
 Speedtest link: https://www.speedtest.net/result/c/3e219403-e33c-426b-9c2a-1983126a6e4e
 ```
-To test a mounted disk speed, mount it to /test-volume like so
+To test a mounted disk or ssd speed, mount it to /test-volume like so
 ```
 docker run -v /path/to/host/disk:/test-volume ghcr.io/nicenode/speedometer
 ```
@@ -56,7 +56,7 @@ docker run ghcr.io/nicenode/speedometer -f json
       }
     }
   },
-  "disk":{
+  "storage":{
     "readIOPS":30068,
     "writeIOPS":10049,
     "readMinIOPS":25966,
