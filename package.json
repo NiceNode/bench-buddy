@@ -1,6 +1,6 @@
 {
   "name": "speedometer",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "measures various speeds of a container environment",
   "main": "index.js",
   "type": "module",

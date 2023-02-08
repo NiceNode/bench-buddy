@@ -102,7 +102,7 @@ const memory = async (req) => {
 			const { stdout, stderr } = await exec("free -m");
 			const output = stdout.split("\n")[1]; // get the second line of output
 			const totalMemory = output.split(/\s+/)[1]; // get the second column (total memory)
-			const availableMemory = output.split(/\s+/)[3]; // get the fourth column (avail. memory)
+			const availableMemory = output.split(/\s+/)[6]; // get the seventh column (avail. memory)
 			const totalMemoryNumMB = parseInt(totalMemory)
 			const availableMemoryNumMB = parseInt(availableMemory)
 			const totalMemoryNumGB = rnd(totalMemoryNumMB/1000)
@@ -361,7 +361,7 @@ const internetSpeed = async (req) => {
 		}
 
 		if(req?.dataCap) {
-			console.log(warning(`Speedometer cannot test your data cap.\nA data cap minimum of ${req?.dataCap.minimum}TB, but recommended ${req?.dataCap.recommended}TB or more.`))
+			console.log(warning(`Speedometer cannot test your data cap.\nRequires a data cap minimum of ${req?.dataCap.minimum}TB, but recommended ${req?.dataCap.recommended}TB or more.`))
 		}
 		return results;
 	} catch(error) {
