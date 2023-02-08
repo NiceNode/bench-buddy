@@ -335,6 +335,7 @@ const internetSpeed = async (req) => {
 			results.latency = outputJSON.ping.latency;
 			results.resultsUrl = outputJSON.result.url;
 
+			console.log(`Download: average ${downloadAvgMbps}Mbps, latency: iqm ${outputJSON.download.latency.iqm}ms and max ${outputJSON.download.latency.high}ms`);
 			if(req?.speed?.download) {
 				const reqTotal = req.speed.download
 				if(reqTotal.minimum && downloadAvgMbps < reqTotal.minimum) {
@@ -344,8 +345,8 @@ const internetSpeed = async (req) => {
 				} else {
 					console.log(success(`Satisfies recommended ${reqTotal.recommended}Mbps download`))
 				}
-				console.log(`Download: average ${downloadAvgMbps}Mbps, latency: iqm ${outputJSON.download.latency.iqm}ms and max ${outputJSON.download.latency.high}ms`);
 			}
+			console.log(`Upload: average ${uploadAvgMbps}Mbps, latency: iqm ${outputJSON.upload.latency.iqm}ms and max ${outputJSON.upload.latency.high}ms`);
 			if(req?.speed?.upload) {
 				const reqTotal = req.speed.upload
 				if(reqTotal.minimum && uploadAvgMbps < reqTotal.minimum) {
@@ -355,7 +356,6 @@ const internetSpeed = async (req) => {
 				} else {
 					console.log(success(`Satisfies recommended ${reqTotal.recommended}Mbps upload`))
 				}
-				console.log(`Upload: average ${uploadAvgMbps}Mbps, latency: iqm ${outputJSON.upload.latency.iqm}ms and max ${outputJSON.upload.latency.high}ms`);
 			}
 			console.log(`Speedtest link: ${outputJSON.result.url}`);
 		}
