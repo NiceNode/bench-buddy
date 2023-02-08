@@ -266,7 +266,8 @@ const storage = async (req) => {
 
 		if(!req || req?.size) {
 			results.size = {};
-			const { stdout, stderr } = await exec(`df --block-size=GB -h ${VOLUME_MOUNT_PATH}`);
+			// --block-size must follow -h
+			const { stdout, stderr } = await exec(`df -h ${VOLUME_MOUNT_PATH} --block-size=GB`);
 			const output = stdout.split("\n")[1]; // get the second line of output
 			// get the 2nd and 4th column and remove trailing G
 			const totalStorage = output.split(/\s+/)[1].slice(0, -1); 
@@ -359,7 +360,7 @@ const internetSpeed = async (req) => {
 			console.log(`Speedtest link: ${outputJSON.result.url}`);
 		}
 
-		if(!req || req?.dataCap) {
+		if(req?.dataCap) {
 			console.log(warning(`Speedometer cannot test your data cap.\nA data cap minimum of ${req?.dataCap.minimum}TB, but recommended ${req?.dataCap.recommended}TB or more.`))
 		}
 		return results;
