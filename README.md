@@ -82,11 +82,9 @@ docker run ghcr.io/nicenode/speedometer --help
 ```
 ### Develop
 Local environment setup: 
-1. In the Containerfile, swap commenting out the `entrypoint` with `cmd bash`
-2. Build a local container `podman build -t speedometer-local .`
-3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir speedometer-local` so that changes to code on your host machine will reflect inside the container.
-4. Modify index.js code
-5. Run `node /workdir/index.js` inside the container
+1. Run `npm run work`. It will build a container locally and run it interactively with the speedometer repo code "mounted" in the container.
+2. Now you can modify source code on your host machine as normal and it will change inside the container.
+3. Run it with `npm run dev` inside the container to run your modified code.
 
 ## Why is my node not syncing?
 The first goal of this project is to answer this question.
