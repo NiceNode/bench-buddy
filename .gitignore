@@ -1,3 +1,6 @@
+dist
+
+# file io test files (should be deleted)
 random_read_write.fio
 fio.out
 

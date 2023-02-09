@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/esm/tsconfig.json",
+  "compilerOptions": {
+		"module": "nodenext",
+		"allowJs": true,
+		"esModuleInterop": true,
+		"outDir": "dist"
+	},
+	"exclude": ["node_modules", "src/**/*.js", "*.js"],
+  "include": ["src/**/*.ts"],
+}
