@@ -86,6 +86,7 @@ Local environment setup:
 2. Now you can modify source code on your host machine as normal and it will change inside the container.
 3. Run it with `npm run dev` inside the container to run your modified code.
 
+Enable git commit-signing before opening a pull-request
 ## Why is my node not syncing?
 The first goal of this project is to answer this question.
 
