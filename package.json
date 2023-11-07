@@ -1,8 +1,8 @@
 {
-  "name": "speedometer",
-  "version": "1.2.4",
-  "description": "measures various speeds of a container environment",
-  "main": "index.js",
+  "name": "benchbuddy",
+  "version": "1.3.0",
+  "description": "A benchmark tool for container systems",
+  "homepage": "https://benchbuddy.xyz",
   "type": "module",
   "dependencies": {
     "chalk": "^5.2.0",
@@ -11,14 +11,14 @@
   },
   "scripts": {
     "pod-mach-init": "podman machine init --rootful --cpus 8 --memory 12288 --now",
-    "print-image-size": "podman inspect -f \"{{ .Size }}\" speedometer-local",
-    "build-local": "podman build -t speedometer-local .",
-    "run-local": "podman run speedometer-local",
-    "work": "podman run -it -v $(pwd):/workdir speedometer-local"
+    "print-image-size": "podman inspect -f \"{{ .Size }}\" benchbuddy-local",
+    "build-local": "podman build -t benchbuddy-local .",
+    "run-local": "podman run benchbuddy-local",
+    "work": "podman run -it -v $(pwd):/workdir benchbuddy-local"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NiceNode/speedometer.git"
+    "url": "git+https://github.com/NiceNode/benchbuddy.git"
   },
   "keywords": [
     "container",
@@ -33,7 +33,6 @@
   "author": "jgresham",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NiceNode/speedometer/issues"
-  },
-  "homepage": "https://github.com/NiceNode/speedometer#readme"
+    "url": "https://github.com/NiceNode/benchbuddy/issues"
+  }
 }

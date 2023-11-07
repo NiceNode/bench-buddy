@@ -1,12 +1,12 @@
-# speedometer
+# benchbuddy
 Runtime environment performance testing for containers - outputs cpu, memory, storage (ssd) read and write speeds, internet speeds, and more. This is valuable to test a container environment's resources and setup.
 ## Getting started
 ### Pre-requisite
 Install a container runtime like [Podman](https://podman.io/) or [Docker](https://www.docker.com/)
 ### Run
 ```
-podman run ghcr.io/nicenode/speedometer
-docker run ghcr.io/nicenode/speedometer
+podman run ghcr.io/nicenode/benchbuddy
+docker run ghcr.io/nicenode/benchbuddy
 
 (sample output...)
 Starting performance tests and other testing...
@@ -27,11 +27,11 @@ Speedtest link: https://www.speedtest.net/result/c/3e219403-e33c-426b-9c2a-19831
 ```
 To test a mounted disk or ssd speed, mount it to /test-volume like so
 ```
-docker run -v /path/to/host/disk:/test-volume ghcr.io/nicenode/speedometer
+docker run -v /path/to/host/disk:/test-volume ghcr.io/nicenode/benchbuddy
 ```
 Output JSON
 ```
-docker run ghcr.io/nicenode/speedometer -f json
+docker run ghcr.io/nicenode/benchbuddy -f json
 {
   "cpu":{
     "cores":8,
@@ -74,17 +74,17 @@ This project is in early stages, so expect the output format to change.
 Run a limited set of tests
 Example only run cpu and memory tests
 ```
-docker run ghcr.io/nicenode/speedometer -t cpu memory
+docker run ghcr.io/nicenode/benchbuddy -t cpu memory
 ```
 CLI documentation
 ```
-docker run ghcr.io/nicenode/speedometer --help
+docker run ghcr.io/nicenode/benchbuddy --help
 ```
 ### Develop
 Local environment setup: 
 1. In the Containerfile, swap commenting out the `entrypoint` with `cmd bash`
-2. Build a local container `podman build -t speedometer-local .`
-3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir speedometer-local` so that changes to code on your host machine will reflect inside the container.
+2. Build a local container `podman build -t benchbuddy-local .`
+3. Run the container interactively with a volume mount from this repo to `/workdir` in the container `podman run -it -v $(pwd):/workdir benchbuddy-local` so that changes to code on your host machine will reflect inside the container.
 4. Modify index.js code
 5. Run `node /workdir/index.js` inside the container
 
@@ -94,7 +94,7 @@ The first goal of this project is to answer this question.
 Secondly, this project can be used by developers and users who want to evaluate the performance and setup of their specific container environment. Example, a person who is a solo-home-ethereum-staker!
 
 ## Credits
-The first version of speedometer was based off of Stakehouse's eth-wizard's tests inside its Ethereum validator installation wizard. Code at https://github.com/stake-house/eth-wizard/blob/main/ethwizard/platforms/ubuntu/install.py#L51
+The first version of benchbuddy was based off of Stakehouse's eth-wizard's tests inside its Ethereum validator installation wizard. Code at https://github.com/stake-house/eth-wizard/blob/main/ethwizard/platforms/ubuntu/install.py#L51
 ## Terms, agreements, privacy, etc
 By using or running this code or container, you agree to the following agreements set by a third-party tool used inside this software:
 

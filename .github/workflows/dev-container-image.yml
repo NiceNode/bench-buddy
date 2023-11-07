@@ -30,7 +30,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/nicenode/speedometer-dev
+            ghcr.io/nicenode/benchbuddy-dev
           # Docker tags based on the following events/attributes
           tags: |
             dev
@@ -58,4 +58,4 @@ jobs:
     #     sudo apt-get update
 
     # - name: Build the Container image
-    #   run: docker buildx build . --platform linux/arm64, linux/amd64 --file Containerfile --tag nicenode/speedometer:$(date +%s)
+    #   run: docker buildx build . --platform linux/arm64, linux/amd64 --file Containerfile --tag nicenode/benchbuddy:$(date +%s)
