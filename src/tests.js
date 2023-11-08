@@ -1,5 +1,5 @@
 /**
- * The first version of speedometer was based off of 
+ * The first version of benchbuddy was based off of 
  * stakehouse's eth-wizard tests. 
  * (https://github.com/stake-house/eth-wizard/blob/main/ethwizard/platforms/ubuntu/install.py#L51) 
  */
@@ -361,7 +361,7 @@ const internetSpeed = async (req) => {
 		}
 
 		if(req?.dataCap) {
-			console.log(warning(`Speedometer cannot test your data cap.\nRequires a data cap minimum of ${req?.dataCap.minimum}TB, but recommended ${req?.dataCap.recommended}TB or more.`))
+			console.log(warning(`Benchbuddy cannot test your data cap.\nRequires a data cap minimum of ${req?.dataCap.minimum}TB, but recommended ${req?.dataCap.recommended}TB or more.`))
 		}
 		return results;
 	} catch(error) {
@@ -482,7 +482,7 @@ inputArgs = yargs(hideBin(process.argv))
 		choices: ['eth-node']
 	})
 	.help()
-	.epilogue('For more information, visit https://github.com/NiceNode/speedometer')
+	.epilogue('For more information, visit https://github.com/NiceNode/benchbuddy')
   .parse()
 
 // console.log (inputArgs)

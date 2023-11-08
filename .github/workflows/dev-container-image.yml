@@ -1,4 +1,4 @@
-name: Container Image CI
+name: Dev Container Image CI
 
 on:
   push:
@@ -12,13 +12,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: get-npm-version
         id: package-version
@@ -26,25 +26,25 @@ jobs:
 
       - name: Docker meta
         id: docker-meta-id # you'll use this in the next step
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v5
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/nicenode/speedometer-dev
+            ghcr.io/nicenode/benchbuddy-dev
           # Docker tags based on the following events/attributes
           tags: |
             dev
             ${{steps.package-version.outputs.current-version}}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: jgresham
           password: ${{ secrets.GH_PUSH_PACKAGES }}
 
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: Containerfile
@@ -58,4 +58,4 @@ jobs:
     #     sudo apt-get update
 
     # - name: Build the Container image
-    #   run: docker buildx build . --platform linux/arm64, linux/amd64 --file Containerfile --tag nicenode/speedometer:$(date +%s)
+    #   run: docker buildx build . --platform linux/arm64, linux/amd64 --file Containerfile --tag nicenode/benchbuddy:$(date +%s)
