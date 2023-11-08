@@ -420,7 +420,7 @@ const timeAccuracy = async (req) => {
 	}
 }
 
-const main = async () => {
+export const main = async () => {
 	const results = {};
 	inputReq = inputArgs.requirements === 'eth-node' ? ethNode : undefined;
 
@@ -491,5 +491,3 @@ inputArgs = yargs(hideBin(process.argv))
 if(inputArgs.format !== 'pretty') {
 	console.log = () => {}
 }
-
-main()

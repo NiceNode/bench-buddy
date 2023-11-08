@@ -1,11 +1,6 @@
-FROM node:latest as builder
-WORKDIR /app
-COPY . .
-RUN npm install
-RUN npm run build
-
-############################
-
+# FROM node:latest as builder
+# WORKDIR /app
+# COPY . .
 FROM ubuntu:latest
 
 RUN apt-get -y update
@@ -19,14 +14,12 @@ apt-get install -y sysbench
 
 RUN mkdir /test-volume
 WORKDIR /workdir
-COPY --from=builder /app/dist .
-COPY package.json .
-COPY package-lock.json .
-RUN npm install --omit=dev
+COPY . .
+RUN npm install
 
 # Swap entrypoint with this while developing js/index.js, docker run -it into the container,
 #		and modify js code
-# CMD ["bash"]
+CMD ["bash"]
 
 # Entrypoint allows cli vars to pass to index.js
-ENTRYPOINT ["node", "index.js"]
+# ENTRYPOINT ["node", "index.js"]
